@@ -3,12 +3,12 @@
 const express = require('express');
 const path = require('path');
 const app = express();
-const port = 3000;
+const port = 3001;
 
 app.use(express.json());
 
 // Serve static files (HTML, CSS, JS)
-app.use(express.static(__dirname));
+app.use(express.static(path.join(__dirname, 'public')));
 
 // GET /add?num1=5&num2=3
 app.get('/add', (req, res) => {
@@ -49,15 +49,18 @@ app.get('/divide', (req, res) => {
   res.json({ result: num1 / num2 });
 });
 
-app.listen(port, () => {
-  console.log('Server running at http://localhost:${port}');
-});
-
-
 app.post('/add', (req, res) => {
   const { num1, num2 } = req.body;
   if (isNaN(num1) || isNaN(num2)) {
     return res.status(400).json({ error: 'Invalid numbers' });
   }
-  res.json({ result: num1 + num2 });
-}); 
+  res.json({ result: Number(num1) + Number(num2) });
+});
+
+if (require.main === module) {
+  app.listen(port, () => {
+    console.log(`Server running at http://localhost:${port}`);
+  });
+}
+
+module.exports = app;
